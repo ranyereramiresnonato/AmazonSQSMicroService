@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-dotnet-api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      AWS__AccessKey: test
+      AWS__SecretKey: test
+      AWS__Region: us-east-1
+      AWS__ServiceURL: http://localstack:4566
+      SQS__QueueName: webhooks
+    depends_on: 
+      - localstack
+
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: sqs
+      DEBUG: "1"
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
